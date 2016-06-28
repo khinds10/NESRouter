@@ -91,12 +91,25 @@ Add the following line:
 
 Edit the wlan0 section so that it looks like this:
 
-    allow-hotplug wlan0
+    auto lo
+    iface lo inet loopback
+
+    iface eth0 inet manual
+
+    auto wlan0
     iface wlan0 inet static
         address 172.24.1.1
         netmask 255.255.255.0
         network 172.24.1.0
         broadcast 172.24.1.255
+
+    auto eth1
+    iface eth1 inet static
+        address 172.24.2.1
+        netmask 255.255.255.0
+        network 172.24.2.0
+        broadcast 172.24.2.255
+
 
 Reload DHCP Server and bounce the configuration for eth0 and wlan0 connections
 
@@ -173,15 +186,14 @@ Configure DNSMASQ
 
 `sudo vi /etc/dnsmasq.conf`
 
-    interface=wlan0           # Use interface wlan0
-    listen-address=172.24.1.1 # Explicitly specify the address to listen on
     bind-interfaces           # Bind to the interface to make sure we aren't sending things elsewhere
     server=8.8.8.8            # Forward DNS requests to Google DNS
     domain-needed             # Don't forward short names
     bogus-priv                # Never forward addresses in the non-routed address spaces.
-    
-    # Assign IP addresses between 172.24.1.100 and 172.24.1.250 with infinite lease time (for device usage stats)
-    dhcp-range=172.24.1.100,172.24.1.250,infinite 
+
+    # Assign IP addresses w/infinite lease time (for device usage stats)
+    dhcp-range=wlan0,172.24.1.100,172.24.1.200,255.255.255.0,172.24.1.255,infinite
+    dhcp-range=eth1,172.24.2.100,172.24.2.200,255.255.255.0,172.24.2.255,infinite 
 
 SET UP IPV4 FORWARDING
 
@@ -194,6 +206,10 @@ Activate it immediately with
 `sudo sh -c "echo 1 > /proc/sys/net/ipv4/ip_forward"`
 
 `sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE`
+
+`sudo iptables -A FORWARD -i eth0 -o eth1 -m state --state RELATED,ESTABLISHED -j ACCEPT`
+
+`sudo iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT`
 
 `sudo iptables -A FORWARD -i eth0 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT`
 
@@ -227,6 +243,7 @@ Allow port 22 for public use (for remote network access)
 Allow all ports on my local network
 
 `sudo ufw allow from 172.24.1.0/24`
+`sudo ufw allow from 172.24.2.0/24`
 
 Allow web ports to everyone
 
