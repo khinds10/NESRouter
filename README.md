@@ -98,17 +98,17 @@ Edit the wlan0 section so that it looks like this:
 
     auto wlan0
     iface wlan0 inet static
-        address 172.24.1.1
+        address 10.0.10.1
         netmask 255.255.255.0
-        network 172.24.1.0
-        broadcast 172.24.1.255
+        network 10.0.10.0
+        broadcast 10.0.10.255
 
     auto eth1
     iface eth1 inet static
-        address 172.24.2.1
+        address 10.0.20.1
         netmask 255.255.255.0
-        network 172.24.2.0
-        broadcast 172.24.2.255
+        network 10.0.20.0
+        broadcast 10.0.20.255
 
 
 Reload DHCP Server and bounce the configuration for eth0 and wlan0 connections
@@ -192,8 +192,8 @@ Configure DNSMASQ
     bogus-priv                # Never forward addresses in the non-routed address spaces.
 
     # Assign IP addresses w/infinite lease time (for device usage stats)
-    dhcp-range=wlan0,172.24.1.100,172.24.1.200,255.255.255.0,172.24.1.255,infinite
-    dhcp-range=eth1,172.24.2.100,172.24.2.200,255.255.255.0,172.24.2.255,infinite 
+    dhcp-range=wlan0,10.0.10.100,10.0.10.200,255.255.255.0,10.0.10.255,infinite
+    dhcp-range=eth1,10.0.20.100,10.0.20.200,255.255.255.0,10.0.20.255,infinite 
 
 SET UP IPV4 FORWARDING
 
@@ -232,6 +232,20 @@ Restart Services
 
 `sudo reboot`
 
+####Assigning Static IPs [Optional]
+**If you would like hosts on your network to have static ips please use the following**
+
+Aquire the hosts currently connected via DHCP
+`vi /var/lib/misc/dnsmasq.leases`
+
+Add the MAC Address (from output above) and the IP address you would like to assign them to
+`sudo vi /etc/dnsmasq.conf`
+
+    # main desktop
+    dhcp-host=12:34:56:78:9a:bc,10.0.20.20
+
+**Note: This will assign the network interface with the MAC Address: 12:34:56:78:9a:bc to IP address 10.0.20.20. The IP address listed does NOT have to be in the DHCP range given, just on the same subnet.  My main desktop above is on subnet eth1:10.0.20.0, so I gave it IP Address of 10.0.20.20.**
+
 ####Adding UFW Firewall
 
 `sudo apt-get install ufw`
@@ -242,8 +256,8 @@ Allow port 22 for public use (for remote network access)
 
 Allow all ports on my local network
 
-`sudo ufw allow from 172.24.1.0/24`
-`sudo ufw allow from 172.24.2.0/24`
+`sudo ufw allow from 10.0.10.0/24`
+`sudo ufw allow from 10.0.20.0/24`
 
 Allow web ports to everyone
 
@@ -288,6 +302,12 @@ Now your display should be ready to run
 
 `python examples/pi_logo.py`
 *should show a RaspberryPI symbol on your display to confirm it's working*
+
+### Install network monitoring tools
+
+`sudo apt-get install ifstat`
+
+(more here)
 
 ##  Setup the display script to run at startup
 
