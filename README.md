@@ -110,7 +110,6 @@ Edit the wlan0 section so that it looks like this:
         network 10.0.20.0
         broadcast 10.0.20.255
 
-
 Reload DHCP Server and bounce the configuration for eth0 and wlan0 connections
 
 `sudo service dhcpcd restart`
@@ -273,15 +272,36 @@ Enable UFW and check the status
 
 `sudo ufw status`
 
-### Connecting the ssd1306 Display
+Fix BUG with UFW not starting on startup
 
-    (diagram here)
+`sudo su`
+`crontab -e`
+
+Add the following line:
+`@reboot /bin/sleep 60; ufw --force enable`
+
+###Install inside the NES
+
+    (picture here)
+    
+###Connecting NES LED
+
+    (picture here)
+
+###Connecting 5V Fan
+
+    (picture here)
+    
+###Connecting the ssd1306 Display
+
+    (picture here)
+    
     VCC is connected to 3v
     GND is ground
     SDA is SDA
     SCL is SCL
 
-Download and install drivers
+Download and install drivers for ssd1306 Display
 
 `sudo apt-get install i2c-tools python-smbus python-pip ifstat git python-imaging`
 `git clone https://github.com/rm-hull/ssd1306.git`
@@ -303,19 +323,63 @@ Now your display should be ready to run
 `python examples/pi_logo.py`
 *should show a RaspberryPI symbol on your display to confirm it's working*
 
-### Install network monitoring tools
+###Install network monitoring tools & DB Logging
 
-`sudo apt-get install ifstat`
+`sudo apt-get install ifstat memcached python-memcache postgresql postgresql-contrib python-psycopg2`
 
-(more here)
+`sudo vi /etc/postgresql/9.4/main/pg_hba.conf`
+>Add the following line to the end of the file:
+>local all pi password
 
-##  Setup the display script to run at startup
+`sudo -i -u postgres`
+`psql`
+
+`create role pi password 'password here';`
+`alter role pi login;`
+`alter role pi superuser;`
+`\du`
+>(you should see your PI user with the permissions granted)
+
+`create database network_stats;`
+`\q`
+`exit`
+`psql -d network_stats`
+        
+>CREATE TABLE traffic_per_minute (
+>    id serial,
+>    time timestamp without time zone NOT NULL,
+>    eth0_down real,
+>    eth0_up real,
+>    eth1_down real,
+>    eth1_up real,
+>    wan0_down real,
+>    wan0_up real
+>);
+>CREATE UNIQUE INDEX time_idx ON traffic_per_minute (time);
+
+Copy the "logging" folder of code from this project to the home directory of your RPi
 
 `crontab -e`
 
 Add this line
 
-`@reboot sleep 60 && python /home/pi/display/NESRouter.py 2>&1 >> /home/pi/display/NESRouter-output.log`
+`@reboot /bin/sleep 60; nohup python /home/pi/logging/networkUsage.py >/dev/null 2>&1`
+
+###Install the dashboard screen
+
+Copy the "display" folder of code from this project to the home directory of your RPi
+
+Run it as follows
+
+>$ `python /home/pi/display/NESRouter.py`
+
+Setup the display script to run at startup
+
+`crontab -e`
+
+Add this line
+
+`@reboot nohup python /home/pi/display/NESRouter.py >/dev/null 2>&1`
 
 Verify the display starts working on reboot
 

@@ -2,7 +2,7 @@
 from oled.device import ssd1306, sh1106
 from oled.render import canvas
 from PIL import ImageFont
-import time, commands, subprocess
+import time, commands, subprocess, re
 
 # define fonts
 font = ImageFont.load_default()
@@ -12,7 +12,7 @@ bodyFont = ImageFont.truetype('/home/pi/display/8bit.ttf', 9)
 # device and screen settings
 device = ssd1306(port=1, address=0x3C)
 ssid="NintendoWiFi"
-displayIterations = 3
+displayIterations = 4
 
 def drawTextOnLine(line, text, font, draw):
     """for given line and text and font, draw the text on the screen"""
@@ -31,22 +31,57 @@ while True:
             iteration = 1
 
         # get current outside world IP Address
-        ipAddress = commands.getstatusoutput("ip addr show br0 | grep inet | awk '{print $2}' | cut -d/ -f1")
+        ipAddress = commands.getstatusoutput("ip addr show eth0 | grep inet | awk '{print $2}' | cut -d/ -f1")
         ipAddress = ipAddress[1].split('\n')
         ipAddress = ipAddress[0]
-
+        
+        # get number of leases assigned
+        leaseCount = commands.getstatusoutput("wc -l /var/lib/misc/dnsmasq.leases")
+        leaseCount = leaseCount[1].split(' ')
+        leaseCount = leaseCount[0]
+        
         # get local computer network stats from ifstat command
         networkInfo = str(subprocess.check_output(['ifstat', '1', '1']))
         networkInfo = networkInfo.replace("eth1", "")
         networkInfo = networkInfo.replace("eth0", "")
         networkInfo = networkInfo.replace("wlan0", "")
-        networkInfo = networkInfo.replace("br0", "")
         networkInfo = networkInfo.replace("KB/s in", "")
         networkInfo = networkInfo.replace("KB/s out", "")
         networkInfo = networkInfo.split()
         kbpsOut = networkInfo[0]
         kbpsIn = networkInfo[1]
-       
+      
+        # get readable uptime
+        uptime = commands.getstatusoutput("uptime -p")
+        uptime = uptime[1]
+        uptime = uptime.replace("up ", "")
+        uptime = uptime.replace("days", "d")
+        uptime = uptime.replace("hours", "h")
+        uptime = uptime.replace("minutes", "m")        
+        uptime = uptime.replace(", ", "-")
+        uptime = uptime.replace(" ", "")
+        uptime = uptime
+
+        # get total upload and dowload statistics [RX stand for received (download) and TX for tranferred (upload)]
+        ifconfig = commands.getstatusoutput("ifconfig")
+        ifconfig = ifconfig[1]
+        downloadStats = '';
+        uploadStats = '';
+        for line in ifconfig.splitlines():
+            if 'RX bytes:' in line:
+                try:
+                    m = re.search('\([0-9a-zA-Z\. ]+\)', line)
+                    downloadStats = m.group(0)
+                    downloadStats = downloadStats.replace("(", "")
+                    downloadStats = downloadStats.replace(")", "")
+                    m = re.search('\([0-9a-zA-Z\. ]+\)$', line)
+                    uploadStats = m.group(0)
+                    uploadStats = uploadStats.replace("(", "")
+                    uploadStats = uploadStats.replace(")", "")
+                except:
+                    pass
+                break
+
         #depending on which iteration screen we're on, show 1 of the 3 screens available 
         with canvas(device) as draw:
             if (iteration == 1):
@@ -56,14 +91,19 @@ while True:
                 drawTextOnLine(4, 'Down ' + str(kbpsOut), bodyFont, draw)
             if (iteration == 2):
                 drawTextOnLine(1, str(ssid), titleFont, draw)
-                drawTextOnLine(2, "Hosts X", bodyFont, draw)
+                drawTextOnLine(2, "Leases " + str(leaseCount), bodyFont, draw)
                 drawTextOnLine(3, '7d X.XXGb', bodyFont, draw)
                 drawTextOnLine(4, '30d X.XXGb', bodyFont, draw)
             if (iteration == 3):
                 drawTextOnLine(1, str(ssid), titleFont, draw)
-                drawTextOnLine(2, "Uptime Xd", bodyFont, draw)
+                drawTextOnLine(2, str(ipAddress), bodyFont, draw)
                 drawTextOnLine(3, '1d Avg X.XGb', bodyFont, draw)
                 drawTextOnLine(4, str(kbpsIn) + '/' + str(kbpsOut), bodyFont, draw)
+            if (iteration == 4):
+                drawTextOnLine(1, str(ssid), titleFont, draw)
+                drawTextOnLine(2, str(uptime), bodyFont, draw)
+                drawTextOnLine(3, "RX " + str(downloadStats), bodyFont, draw)
+                drawTextOnLine(4, "TX " + str(uploadStats), bodyFont, draw)
     except:
         pass
         
