@@ -345,17 +345,17 @@ Now your display should be ready to run
 `exit`
 `psql -d network_stats`
         
->CREATE TABLE traffic_per_minute (
+>CREATE TABLE traffic\_per\_minute (
 >    id serial,
 >    time timestamp without time zone NOT NULL,
->    eth0_down real,
->    eth0_up real,
->    eth1_down real,
->    eth1_up real,
->    wan0_down real,
->    wan0_up real
+>    eth0\_down real,
+>    eth0\_up real,
+>    eth1\_down real,
+>    eth1\_up real,
+>    wan0\_down real,
+>    wan0\_up real
 >);
->CREATE UNIQUE INDEX time_idx ON traffic_per_minute (time);
+>CREATE UNIQUE INDEX time\_idx ON traffic\_per\_minute (time);
 
 Copy the "logging" folder of code from this project to the home directory of your RPi
 
