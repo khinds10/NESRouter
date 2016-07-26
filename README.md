@@ -327,23 +327,34 @@ Now your display should be ready to run
 
 `sudo apt-get install ifstat memcached python-memcache postgresql postgresql-contrib python-psycopg2`
 
+
 `sudo vi /etc/postgresql/9.4/main/pg_hba.conf`
 >Add the following line to the end of the file:
 >local all pi password
 
 `sudo -i -u postgres`
+
 `psql`
 
 `create role pi password 'password here';`
+
 `alter role pi login;`
+
 `alter role pi superuser;`
+
 `\du`
+
 >(you should see your PI user with the permissions granted)
 
 `create database network_stats;`
+
 `\q`
+
 `exit`
+
 `psql -d network_stats`
+
+Run the following queries:
         
 >CREATE TABLE traffic\_per\_minute (
 >    id serial,
@@ -355,6 +366,7 @@ Now your display should be ready to run
 >    wan0\_down real,
 >    wan0\_up real
 >);
+> 
 >CREATE UNIQUE INDEX time\_idx ON traffic\_per\_minute (time);
 
 Copy the "logging" folder of code from this project to the home directory of your RPi
