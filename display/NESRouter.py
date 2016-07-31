@@ -20,7 +20,7 @@ def drawTextOnLine(line, text, font, draw):
     yAxis = 16 * (line-1)
     draw.text((xAxis, yAxis), str(text), font=font, fill=255)
     pass
-
+    
 print 'NESRouter display has started...'
 iteration = 0
 while True:
@@ -82,6 +82,26 @@ while True:
                     pass
                 break
 
+        # from the most recent summary file get the traffic summary for display
+        summaryFile = open('/home/pi/logging/trafficSummary.log', 'r')
+        trafficSummary = summaryFile.readline()
+        trafficSummary = trafficSummary.split('|')
+
+        # calculate projected internet usage for 1 / 7 and 30 days time
+        oneDayTotalsUnit = " GiB"
+        oneDayTotals = float(int(trafficSummary[4])/1000/1000/1000)
+        if oneDayTotals < 1:
+            oneDayTotals = float(int(trafficSummary[4])/1000/1000)
+            oneDayTotalsUnit = " MiB"
+
+        sevenDayTotals = float(int(trafficSummary[5])/1000/1000/1000)
+        if sevenDayTotals < 1:
+            sevenDayTotals = "--"
+
+        thirtyDayTotals = float(int(trafficSummary[6])/1000/1000/1000)
+        if thirtyDayTotals < 1:
+            sevenDayTotals = "--"
+
         #depending on which iteration screen we're on, show 1 of the 3 screens available 
         with canvas(device) as draw:
             if (iteration == 1):
@@ -92,12 +112,12 @@ while True:
             if (iteration == 2):
                 drawTextOnLine(1, str(ssid), titleFont, draw)
                 drawTextOnLine(2, "Leases " + str(leaseCount), bodyFont, draw)
-                drawTextOnLine(3, '7d X.XXGb', bodyFont, draw)
-                drawTextOnLine(4, '30d X.XXGb', bodyFont, draw)
+                drawTextOnLine(3, '7d ' + str(sevenDayTotals) + " GiB", bodyFont, draw)
+                drawTextOnLine(4, '30d ' + str(thirtyDayTotals) + " GiB", bodyFont, draw)
             if (iteration == 3):
                 drawTextOnLine(1, str(ssid), titleFont, draw)
                 drawTextOnLine(2, str(ipAddress), bodyFont, draw)
-                drawTextOnLine(3, '1d Avg X.XGb', bodyFont, draw)
+                drawTextOnLine(3, '1d ' + str(oneDayTotals) + oneDayTotalsUnit, bodyFont, draw)
                 drawTextOnLine(4, str(kbpsIn) + '/' + str(kbpsOut), bodyFont, draw)
             if (iteration == 4):
                 drawTextOnLine(1, str(ssid), titleFont, draw)

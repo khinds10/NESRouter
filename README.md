@@ -377,6 +377,16 @@ Add this line
 
 `@reboot /bin/sleep 60; nohup python /home/pi/logging/networkUsage.py >/dev/null 2>&1`
 
+
+###Install the traffic summary report (runs every 5 minutes by cronjob)
+
+`crontab -e`
+
+add the following line
+
+> */5 * * * * python /home/pi/logging/trafficSummary.py
+
+
 ###Install the dashboard screen
 
 Copy the "display" folder of code from this project to the home directory of your RPi
@@ -396,3 +406,46 @@ Add this line
 Verify the display starts working on reboot
 
 `sudo reboot`
+
+
+###Install the local usage/statistics website [http://10.0.10.1]
+
+`sudo apt-get update && sudo apt-get upgrade -y`
+
+`sudo apt-get install apache2`
+
+`sudo service apache2 restart`
+
+Remove default pages
+
+`cd /var/www`
+
+`sudo rm -rf html`
+   
+Copy 'webportal' folder from this project to your home folder on your RPi and create the symlink for apache to use
+  
+`cd /var/www`
+
+`sudo ln -s /home/pi/webportal html`
+
+`cd /var/www/html`
+
+`chmod +x *.py`
+
+`sudo a2enmod cgi`
+
+`sudo vi /etc/apache2/sites-enabled/000-default.conf`
+
+Enable Python CGI Scripting 
+
+**Add inside the <virtual\> tag**
+
+> <Directory /var/www/html\>
+>   Options +ExecCGI
+>   AddHandler cgi-script .py
+> </Directory\>
+
+`sudo service apache2 restart`
+ 
+You can now visit the local HTTP site [http://10.0.10.1]
+
