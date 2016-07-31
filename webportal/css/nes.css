@@ -1,0 +1,63 @@
+
+#topIcon {
+    height: 32px;
+}
+
+#traffic-panel {
+    width: 100%; 
+    margin-top: 50px;  
+    min-height: 575px; 
+    position:relative;
+}
+
+#traffic-report-title {
+    display:inline; 
+    vertical-align: middle; 
+    color: black;
+}
+
+.nes-corner-image {
+    float:right; 
+    height: 250px; 
+    bottom: 10px; 
+    right: 10px; 
+    position: absolute;
+}
+
+.corner-image {
+    float:right; 
+    height: 50px; 
+    bottom: 10px; 
+    right: 10px; 
+    position: absolute;
+}
+
+.report-dropdown {
+    display:inline; 
+    valign: center;
+}
+
+.traffic-summary-panel {
+    width: 80%; 
+    position: relative;
+}
+
+.report-title {
+    width: 80%; 
+    position: relative;
+}
+
+#device-list-title {
+    padding:0px; 
+    margin:0px;
+    padding-bottom:10px;
+}
+
+.indented-text {
+    font-size: 10px;
+    padding-left: 10px;
+}
+
+.summaryValue {
+    font-weight: bold;
+}

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="/img/favicon-32x32.png">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Nintendo Router</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Custom CSS -->
+    <link href="css/sidebar.css" rel="stylesheet">
+    <link href="css/nes.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+  </head>
+  <body>
+ <div id="wrapper">
+
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                    <a href="/">
+                        <img id="topIcon" src="/img/nes.png"/> Nintendo Router
+                    </a>
+                </li>
+                <li>
+                    <a href="/">Traffic</a>
+                </li>
+                <li>
+                    <a href="/leases.html">Leases</a>
+                </li>
+            </ul>
+        </div>
+        <!-- /#sidebar-wrapper -->
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <span id="menu-toggle" class="glyphicon glyphicon-menu-hamburger"></span>
+                        <span id="page-title">Traffic Statistics </span>
+                        <div id="traffic-panel" class="panel panel-default">
+                          <div class="panel-body">
+                            <h3 id="traffic-report-title"></h3>
+                            <div class="dropdown report-dropdown">
+                              <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                Select Range
+                                <span class="caret"></span>
+                              </button>
+                              <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                <li><a href="/?1-hour">1 hour</a></li>
+                                <li><a href="/?3-hour">3 hour</a></li>
+                                <li><a href="/?6-hour">6 hour</a></li>
+                                <li><a href=" /?12-hour">12 hour</a></li>
+                                <li><a href="/?1-day">1 day</a></li>
+                                <li><a href="/?3-day">3 days</a></li>
+                                <li><a href="/?7-day">7 days</a></li>
+                                <li><a href="/?30-day">30 days</a></li>
+                              </ul>
+                            </div>
+                            <div id="chart_div">LOADING...</div>
+                            
+                            <div id="recentHighTraffic"><h4>High Traffic Amount (for this period):</h4> <strong>XX hour(s) XX minutes</strong> (Video Streaming)</div>
+                            
+                            <img class="nes-corner-image" src="/img/nes.png"/>
+                          </div>
+                          </div>
+                        <div class="panel panel-default traffic-summary-panel">
+                          <div class="panel-body">
+                            <h4>External IP Address: <span id="ipAddress" class="summaryValue"></span></h4>
+                            <h5>Total Device Uptime: <span id="totalUptime" class="summaryValue"></span></h5>
+                            <h5>Total Download: <span id="totalDownload" class="summaryValue"></span></h5>
+                            <h5>Total Upload: <span id="totalUpload" class="summaryValue"></span></h5>
+                            <h5>1 day traffic (average): <span id="oneDayTraffic" class="summaryValue"></span></h5>
+                            <h5>1 week traffic (estimated): <span id="oneWeekTraffic" class="summaryValue"></span></h5>
+                            <h5>1 month traffic (estimated): <span id="oneMonthTraffic" class="summaryValue"></span></h5>
+                            <img class="corner-image" src="/img/mushroom.png"/>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /#page-content-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    
+    <!-- Google Charts -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    
+    <!-- Menu Toggle Script -->
+    <script>
+        $("#menu-toggle").click(function(e) {
+            e.preventDefault();
+            $("#wrapper").toggleClass("toggled");
+        });
+
+        // load google corechart - line chart
+        google.charts.load('current', {'packages':['line', 'corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+      
+        // get the date range from URL if present 
+        function getAPIRange() {    
+            var apiRange = window.location.search;
+            if (window.location.search == '') {
+                apiRange = "?12-hour";
+            }
+            return apiRange;
+        }
+      
+        // get data from API and create our data table out of JSON data loaded from server.
+        function drawChart() {
+            var jsonData = $.ajax({url: "traffic.py"+getAPIRange(),dataType: "json",async: false}).responseText;        
+            var data = new google.visualization.DataTable();
+            data.addColumn('date', 'Date & Time');
+            data.addColumn('number', "Download");
+            data.addColumn('number', "Upload");
+
+            // have to data massage all timestamps in JSON response must by physically converted to javascript Date() objects
+            jsonData = JSON.parse(jsonData);
+            var arrayLength = jsonData.length;
+            for (var i = 0; i < arrayLength; i++) {
+                jsonData[i][0] = new Date(jsonData[i][0]);
+            }
+
+            // add rows from API response
+            data.addRows(jsonData);
+
+            // custom chart formatting
+            var materialOptions = {
+                chart: {
+                    title: 'Network Usage '
+                },
+                width: 800,
+                height: 500,
+                series: {
+                    0: { color: 'black' },
+                    1: { color: 'blue' }
+                },
+                backgroundColor:{
+                    fill: 'blue'
+                }
+            };
+            
+            var chartDiv = document.getElementById('chart_div');
+            var materialChart = new google.charts.Line(chartDiv);
+            materialChart.draw(data, materialOptions);
+        }
+        
+        // change the report title based on what the current report date range is
+        $(document).ready(function(){
+            var dateRange = getAPIRange();
+            dateRange = dateRange.replace("?", "");
+            dateRange = dateRange.replace("-", " ");
+            $("#traffic-report-title").html("Traffic ["+dateRange +"] Period");
+            
+            // get summary report from python API
+            $.ajax({
+              url: "summary.py",
+            }).done(function(response) {
+              $('#ipAddress').html(response[0]);
+              $('#totalUptime').html(response[1]);
+              $('#totalDownload').html(response[2]);
+              $('#totalUpload').html(response[3]);
+              $('#oneDayTraffic').html(Math.round(response[4]/1000/1000 * 100) / 100 + ' MiB');
+              $('#oneWeekTraffic').html(Math.round(response[5]/1000/1000/1000 * 100) / 100 + ' GiB');
+              $('#oneMonthTraffic').html(Math.round(response[6]/1000/1000/1000 * 100) / 100 + ' GiB');
+            });
+        }); 
+    </script>
+  </body>
+</html>
