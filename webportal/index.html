@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -73,7 +74,7 @@
                             </div>
                             <div id="chart_div">LOADING...</div>
                             
-                            <div id="recentHighTraffic"><h4>High Traffic Amount (for this period):</h4> <strong>XX hour(s) XX minutes</strong> (Video Streaming)</div>
+                            <div id="recentHighTraffic"><h4>High Traffic Amount (for this period):</h4> <strong><span id="hours">--</span> hour(s) <span id="minutes">--</span> minutes</strong> (Video Streaming)</div>
                             
                             <img class="nes-corner-image" src="/img/nes.png"/>
                           </div>
@@ -185,7 +186,17 @@
               $('#oneWeekTraffic').html(Math.round(response[5]/1000/1000/1000 * 100) / 100 + ' GiB');
               $('#oneMonthTraffic').html(Math.round(response[6]/1000/1000/1000 * 100) / 100 + ' GiB');
             });
+            
+            // get high usage summary from python API
+            $.ajax({
+              url: "usage.py"+getAPIRange(),
+            }).done(function(response) {
+                    var highUsageMinutes = response * 2;
+                    $('#hours').html(Math.floor( highUsageMinutes / 60));
+                    $('#minutes').html(highUsageMinutes % 60);
+            });
         }); 
     </script>
   </body>
 </html>
+
