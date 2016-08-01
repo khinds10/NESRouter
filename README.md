@@ -72,7 +72,21 @@ Reboot your PI to get the latest changes
 
 ###2) Supplies needed
 
-	(List of supplies needed with images)
+Old Nintendo Case from a broken NES
+![Nintendo Case](https://raw.githubusercontent.com/khinds10/NESRouter/master/construction/NES.jpg "Nintendo Case")
+
+Raspberry Pi 3 Model B
+![Raspberry PI 3](https://raw.githubusercontent.com/khinds10/NESRouter/master/construction/RPi.png "Raspberry PI 3")
+
+Diymall® 0.96" Inch Yellow and Blue I2c IIC Serial 128x64 Oled LCD
+![Yellow and Blue](https://raw.githubusercontent.com/khinds10/NESRouter/master/construction/display.jpg "Yellow and Blue Display")
+
+5V 0.1A Mini Fan Raspberry Pi
+![Mini Fan](https://raw.githubusercontent.com/khinds10/NESRouter/master/construction/fan.jpg "Mini Fan")
+
+Ugreen USB 2.0 to 10/100 Fast Ethernet Lan Wired Network Adapter
+![Ethernet USB](https://raw.githubusercontent.com/khinds10/NESRouter/master/construction/usb-eth.png "Ethernet USB")
+
 
 ###3) Creating the WiFi Access Point
 **Please note, before this becomes a router we're plugging in the RaspberryPi to an existing network via its ethernet port to install the following packages**
