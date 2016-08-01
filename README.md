@@ -72,7 +72,7 @@ Reboot your PI to get the latest changes
 
 ###2) Supplies needed
 
-Old Nintendo Case from a broken NES
+Old Nintendo Case from a broken NES (remove all the old contents inside the case, leaving only the outside frame, the power / reset buttons and the controller connections)
 ![Nintendo Case](https://raw.githubusercontent.com/khinds10/NESRouter/master/construction/NES.jpg "Nintendo Case")
 
 Raspberry Pi 3 Model B
@@ -294,21 +294,26 @@ Fix BUG with UFW not starting on startup
 Add the following line:
 `@reboot /bin/sleep 60; ufw --force enable`
 
+##Construction
+
 ###Install inside the NES
 
-    (picture here)
-    
-###Connecting NES LED
+Mount the RaspberryPi in the middle of the bottom of the empty NES case, fasten by glue or a small screw through the bottom.
+![Final Wiring](https://raw.githubusercontent.com/khinds10/NESRouter/master/construction/final-wiring.jpg" "Final Wiring")
 
-    (picture here)
+Cut the following holes open in the back and side of the case to allow for the small fan to be fastened on the side and the power/ethernet and USB ethernet cables to get in through the back.
+![Display Mounted](https://raw.githubusercontent.com/khinds10/NESRouter/master/construction/holes-cut.jpg" "Holes Cut")
 
-###Connecting 5V Fan
-
-    (picture here)
+Using a 270 ohm resister, connect the "power on LED" of the NES to the 5V and GND pins in the Raspberry Pi (short LED lead is the ground).
+Connect the small fan to the 5V and GND pins as well to have it run when the unit starts up, glue the fan against the hole in the side for it.
+![Final Wiring 2](https://raw.githubusercontent.com/khinds10/NESRouter/master/construction/final-wiring2.jpg" "Final Wiring 2")
     
 ###Connecting the ssd1306 Display
 
-    (picture here)
+![Display Mounted](https://raw.githubusercontent.com/khinds10/NESRouter/master/construction/display-mounted.png" "Display Mounted")
+Remove the black panel above the controller connectors by unscrewing it, cut a small slit in the black plastic to put the 4 pins of the ssd1306 display through to connect on the inside.
+
+Connect the following pins to the pins on the RaspberryPi
     
     VCC is connected to 3v
     GND is ground
