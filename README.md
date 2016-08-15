@@ -63,13 +63,17 @@ Choose:
 >`vi ~/.bashrc`
 >
 >*add the following line:*
+>
 >`alias l='ls -lh'`
+>
 >`source ~/.bashrc`
 
 **Fix VIM default syntax highlighting [optional]**
 
 >`sudo vi  /etc/vim/vimrc`
+>
 >uncomment the following line:
+>
 >_syntax on_
 
 Reboot your PI to get the latest changes
