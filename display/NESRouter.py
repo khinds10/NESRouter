@@ -63,7 +63,7 @@ while True:
         uptime = uptime
 
         # get total upload and dowload statistics [RX stand for received (download) and TX for tranferred (upload)]
-        ifconfig = commands.getstatusoutput("ifconfig")
+        ifconfig = commands.getstatusoutput("/sbin/ifconfig")
         ifconfig = ifconfig[1]
         downloadStats = '';
         uploadStats = '';
