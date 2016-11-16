@@ -103,12 +103,20 @@ Ugreen USB 2.0 to 10/100 Fast Ethernet Lan Wired Network Adapter
 ![Ethernet USB](https://raw.githubusercontent.com/khinds10/NESRouter/master/construction/usb-eth.png "Ethernet USB")
 
 
+**Update local timezone settings**
+
+`sudo dpkg-reconfigure tzdata`
+
+`select your timezone using the interface`
+
 ###3) Creating the WiFi Access Point
 **Please note, before this becomes a router we're plugging in the RaspberryPi to an existing network via its ethernet port to install the following packages**
 
 `sudo apt-get update && sudo apt-get -y upgrade`
 
 `sudo apt-get install dnsmasq hostapd vim`
+
+`sudo apt-get install vim git python-smbus i2c-tools python-imaging python-smbus build-essential python-dev rpi.gpio python3 python3-pip libi2c-dev`
 
 `sudo vi /etc/dhcpcd.conf`
 
@@ -366,7 +374,6 @@ Now your display should be ready to run
 
 `sudo apt-get install ifstat memcached python-memcache postgresql postgresql-contrib python-psycopg2`
 
-
 `sudo vi /etc/postgresql/9.4/main/pg_hba.conf`
 >Add the following line to the end of the file:
 >local all pi password
@@ -488,3 +495,45 @@ Enable Python CGI Scripting
  
 You can now visit the local HTTP site [http://10.0.10.1]
 
+###Setup advanced network monitoring
+
+`sudo apt-get update`
+
+`sudo apt-get install ipfm`
+
+`sudo mv /etc/ipfm.conf /etc/ipfm.conf-bak`
+
+`sudo vi /etc/ipfm.conf`
+
+Create with the following contents:
+
+> # Global variables
+> 
+> # IPFM can monitor only one device.
+> DEVICE eth0
+> 
+> ##### GLOBAL LOGGING CONFIGURATION #####
+> LOG
+> 
+> FILENAME "/var/log/ipfm/%Y_%d_%m/%H_%M"
+> 
+> # log every minute
+> DUMP EVERY 1 minute
+> 
+> # clear statistics each day
+> CLEAR EVERY 24 hour
+> SORT IN
+> RESOLVE
+
+`sudo service ipfm stop`
+
+
+http://www.digole.com/tools/PicturetoC_Hex_converter.php
+
+256 Color for Color OLED/LCD(1 byte/pixel)
+    128 x 128
+
+HEX: 0x
+Get C String
+
+Paste into a c .h header file of your choosing as the pixel data to tell the display to load
