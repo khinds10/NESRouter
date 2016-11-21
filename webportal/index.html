@@ -49,10 +49,12 @@
         <!-- Page Content -->
         <div id="page-content-wrapper">
             <div class="container-fluid">
+
+                <span id="menu-toggle" class="glyphicon glyphicon-menu-hamburger"></span>
+                <span id="page-title">Traffic Statistics </span>
+                 
                 <div class="row">
                     <div class="col-lg-12">
-                        <span id="menu-toggle" class="glyphicon glyphicon-menu-hamburger"></span>
-                        <span id="page-title">Traffic Statistics </span>
                         <div id="traffic-panel" class="panel panel-default">
                           <div class="panel-body">
                             <h3 id="traffic-report-title"></h3>
@@ -72,7 +74,10 @@
                                 <li><a href="/?30-day">30 days</a></li>
                               </ul>
                             </div>
-                            <div id="chart_div">LOADING...</div>
+                            
+                            <div id="chart-div-container">
+                                <div id="chart_div" style="width:400%;">LOADING...</div>
+                            </div>
                             
                             <div id="recentHighTraffic"><h4>High Traffic Amount (for this period):</h4> <strong><span id="hours">--</span> hour(s) <span id="minutes">--</span> minutes</strong> (Video Streaming)</div>
                             
@@ -114,7 +119,7 @@
             e.preventDefault();
             $("#wrapper").toggleClass("toggled");
         });
-
+       
         // load google corechart - line chart
         google.charts.load('current', {'packages':['line', 'corechart']});
         google.charts.setOnLoadCallback(drawChart);
@@ -151,8 +156,8 @@
                 chart: {
                     title: 'Network Usage '
                 },
-                width: 800,
-                height: 500,
+                width: window.innerWidth * 8,
+                height: 400,
                 series: {
                     0: { color: 'black' },
                     1: { color: 'blue' }

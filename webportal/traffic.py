@@ -23,7 +23,26 @@ interval = re.sub('[^0-9a-zA-Z\- ]+', '', interval)
 if (interval == ''):
     interval = '1 day'
     
-# get DB results and return them as JSON
-dBCursor.execute("SELECT time,eth0_down,eth0_up FROM traffic_per_minute WHERE time >= ( NOW() - INTERVAL '" + interval + "' )")
+# get DB results and return them as JSON (Note: 5 hours subtracted for my local timezone EST)
+dBCursor.execute("SELECT time - INTERVAL '5 hour',eth0_down,eth0_up FROM traffic_per_minute WHERE time >= ( NOW() - INTERVAL '" + interval + "' )")
 rows = dBCursor.fetchall()
-print json.dumps(rows, cls=DateEncoder)
+
+# get averages for each 5 minutes as JSON results for the google report
+results = []
+date = '';
+upload = 0.0;
+download = 0.0;
+x = 0
+for row in rows:
+    if x == 0:
+       date = row[0]
+    upload = upload + row[1]
+    download = download + row[2]
+    x = x + 1
+    if x == 5:
+        upload = upload/5
+        download = download/5
+        results.append([date, upload, download])
+        x = 0
+
+print json.dumps(results, cls=DateEncoder)

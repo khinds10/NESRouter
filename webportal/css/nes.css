@@ -1,4 +1,22 @@
 
+#chart-div-container {
+    height: 420px; 
+    width: 100%; 
+    overflow-x:scroll; 
+    overflow-y:none; 
+    margin-bottom: 50px;
+    margin-top: 50px;
+}
+
+#page-title {
+    padding:10px;
+}
+
+#menu-toggle {
+    padding: 10px;
+    cursor: pointer;
+}
+
 #topIcon {
     height: 32px;
 }
@@ -17,11 +35,20 @@
 }
 
 .nes-corner-image {
-    float:right; 
     height: 250px; 
     bottom: 10px; 
     right: 10px; 
-    position: absolute;
+    float: right;
+}
+
+.nes-image-hide-small {
+    position:absolute;
+}
+
+@media (max-width: 768px) {
+  .nes-image-hide-small {
+    display: none;
+  }
 }
 
 .corner-image {
