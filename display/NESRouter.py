@@ -1,27 +1,10 @@
 #!/usr/bin/env python
-from oled.device import ssd1306, sh1106
-from oled.render import canvas
-from PIL import ImageFont
 import time, commands, subprocess, re
 
-# define fonts
-font = ImageFont.load_default()
-titleFont = ImageFont.truetype('/home/pi/display/8bit.ttf', 11)
-bodyFont = ImageFont.truetype('/home/pi/display/8bit.ttf', 9)
-
 # device and screen settings
-device = ssd1306(port=1, address=0x3C)
 ssid="NintendoWiFi"
 displayIterations = 4
-
-def drawTextOnLine(line, text, font, draw):
-    """for given line and text and font, draw the text on the screen"""
-    xAxis = 0
-    yAxis = 16 * (line-1)
-    draw.text((xAxis, yAxis), str(text), font=font, fill=255)
-    pass
     
-print 'NESRouter display has started...'
 iteration = 0
 while True:
     try:
@@ -102,29 +85,58 @@ while True:
         if thirtyDayTotals < 1:
             sevenDayTotals = "--"
 
-        #depending on which iteration screen we're on, show 1 of the 3 screens available 
-        with canvas(device) as draw:
-            if (iteration == 1):
-                drawTextOnLine(1, str(ssid), titleFont, draw)
-                drawTextOnLine(2, str(ipAddress), bodyFont, draw)
-                drawTextOnLine(3, 'Up ' + str(kbpsIn), bodyFont, draw)
-                drawTextOnLine(4, 'Down ' + str(kbpsOut), bodyFont, draw)
-            if (iteration == 2):
-                drawTextOnLine(1, str(ssid), titleFont, draw)
-                drawTextOnLine(2, "Leases " + str(leaseCount), bodyFont, draw)
-                drawTextOnLine(3, '7d ' + str(sevenDayTotals) + " GiB", bodyFont, draw)
-                drawTextOnLine(4, '30d ' + str(thirtyDayTotals) + " GiB", bodyFont, draw)
-            if (iteration == 3):
-                drawTextOnLine(1, str(ssid), titleFont, draw)
-                drawTextOnLine(2, str(ipAddress), bodyFont, draw)
-                drawTextOnLine(3, '1d ' + str(oneDayTotals) + oneDayTotalsUnit, bodyFont, draw)
-                drawTextOnLine(4, str(kbpsIn) + '/' + str(kbpsOut), bodyFont, draw)
-            if (iteration == 4):
-                drawTextOnLine(1, str(ssid), titleFont, draw)
-                drawTextOnLine(2, str(uptime), bodyFont, draw)
-                drawTextOnLine(3, "RX " + str(downloadStats), bodyFont, draw)
-                drawTextOnLine(4, "TX " + str(uploadStats), bodyFont, draw)
+        subprocess.call(["./digole", "clear"])
+                
+        subprocess.call(["./digole", "setColor", "11"])
+        subprocess.call(["./digole", "printxy_abs", "0", "90", 'KEVIN'])
+        
+        subprocess.call(["./digole", "setColor", "255"])
+        subprocess.call(["./digole", "printxy_abs", "0", "105", 'KEVIN'])
+        subprocess.call(["./digole", "printxy_abs", "0", "120", 'KEVIN'])
+
+        subprocess.call(["./digole", "BlasterMaster"]) #1
+        subprocess.call(["./digole", "Castlevania"]) #0
+        subprocess.call(["./digole", "ChipDale"]) #1 
+        subprocess.call(["./digole", "Contra"]) #0
+        subprocess.call(["./digole", "DuckTales"]) #0
+        subprocess.call(["./digole", "Galaga"]) #1
+        subprocess.call(["./digole", "GhostBusters"]) #1
+        subprocess.call(["./digole", "Gradius"]) #0
+        subprocess.call(["./digole", "KidIcarus"]) #1 
+        subprocess.call(["./digole", "MarbleMadness"]) #1
+        subprocess.call(["./digole", "MegaMan"]) #0
+        subprocess.call(["./digole", "MetalGear"]) #0
+        subprocess.call(["./digole", "Metroid"]) #1
+        subprocess.call(["./digole", "PunchOut"]) #0 
+        subprocess.call(["./digole", "SuperMario2"]) #1 
+        subprocess.call(["./digole", "SuperMario3"]) #1
+        subprocess.call(["./digole", "TMNT2"]) #0
+        subprocess.call(["./digole", "TopGun"]) #0
+        subprocess.call(["./digole", "Turtles"]) #1
+        subprocess.call(["./digole", "Zelda"]) #1
+
+        #if (iteration == 1):
+        #    drawTextOnLine(1, str(ssid), titleFont, draw)
+        #    drawTextOnLine(2, str(ipAddress), bodyFont, draw)
+        #    drawTextOnLine(3, 'Up ' + str(kbpsIn), bodyFont, draw)
+        #    drawTextOnLine(4, 'Down ' + str(kbpsOut), bodyFont, draw)
+        #if (iteration == 2):
+         #   drawTextOnLine(1, str(ssid), titleFont, draw)
+         #   drawTextOnLine(2, "Leases " + str(leaseCount), bodyFont, draw)
+         #   drawTextOnLine(3, '7d ' + str(sevenDayTotals) + " GiB", bodyFont, draw)
+         #   drawTextOnLine(4, '30d ' + str(thirtyDayTotals) + " GiB", bodyFont, draw)
+        #if (iteration == 3):
+        #    drawTextOnLine(1, str(ssid), titleFont, draw)
+        #    drawTextOnLine(2, str(ipAddress), bodyFont, draw)
+        #    drawTextOnLine(3, '1d ' + str(oneDayTotals) + oneDayTotalsUnit, bodyFont, draw)
+        #    drawTextOnLine(4, str(kbpsIn) + '/' + str(kbpsOut), bodyFont, draw)
+        #if (iteration == 4):
+        #    drawTextOnLine(1, str(ssid), titleFont, draw)
+        #    drawTextOnLine(2, str(uptime), bodyFont, draw)
+        #    drawTextOnLine(3, "RX " + str(downloadStats), bodyFont, draw)
+        #    drawTextOnLine(4, "TX " + str(uploadStats), bodyFont, draw)
+                
     except:
         pass
         
-    time.sleep(1.5)
+    time.sleep(10)
