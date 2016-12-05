@@ -1,13 +1,80 @@
 #!/usr/bin/env python
 import time, commands, subprocess, re
+from random import randint
 
 # device and screen settings
 ssid="NintendoWiFi"
 displayIterations = 4
+
+def randomTitleScreen(titleScreenNumber):
+    ''' show NES game title screen on the Digole Display
+    @titleScreenNumber : number 1 to 20 of which title screen to show
+    '''
+    subprocess.call(["./digole", "clear"])
+    if titleScreenNumber == 1:
+        subprocess.call(["./digole", "BlasterMaster"])
+        subprocess.call(["./digole", "setColor", "252"])
+    if titleScreenNumber == 2:
+        subprocess.call(["./digole", "Castlevania"])
+        subprocess.call(["./digole", "setColor", "28"])
+    if titleScreenNumber == 3:
+        subprocess.call(["./digole", "ChipDale"]) 
+        subprocess.call(["./digole", "setColor", "249"])
+    if titleScreenNumber == 4:
+        subprocess.call(["./digole", "Contra"])
+        subprocess.call(["./digole", "setColor", "252"])
+    if titleScreenNumber == 5:
+        subprocess.call(["./digole", "DuckTales"])
+        subprocess.call(["./digole", "setColor", "224"])
+    if titleScreenNumber == 6:
+        subprocess.call(["./digole", "Galaga"])
+        subprocess.call(["./digole", "setColor", "28"])
+    if titleScreenNumber == 7:
+        subprocess.call(["./digole", "GhostBusters"])
+        subprocess.call(["./digole", "setColor", "224"])
+    if titleScreenNumber == 8:
+        subprocess.call(["./digole", "Gradius"])
+        subprocess.call(["./digole", "setColor", "11"])
+    if titleScreenNumber == 9:
+        subprocess.call(["./digole", "KidIcarus"]) 
+        subprocess.call(["./digole", "setColor", "249"])
+    if titleScreenNumber == 10:
+        subprocess.call(["./digole", "MarbleMadness"])
+        subprocess.call(["./digole", "setColor", "11"])
+    if titleScreenNumber == 11:
+        subprocess.call(["./digole", "MegaMan"])
+        subprocess.call(["./digole", "setColor", "224"])
+    if titleScreenNumber == 12:
+        subprocess.call(["./digole", "MetalGear"])
+        subprocess.call(["./digole", "setColor", "224"])
+    if titleScreenNumber == 13:
+        subprocess.call(["./digole", "Metroid"])
+        subprocess.call(["./digole", "setColor", "11"])
+    if titleScreenNumber == 14:
+        subprocess.call(["./digole", "PunchOut"]) 
+        subprocess.call(["./digole", "setColor", "252"])
+    if titleScreenNumber == 15:
+        subprocess.call(["./digole", "SuperMario2"]) 
+        subprocess.call(["./digole", "setColor", "249"])
+    if titleScreenNumber == 16:
+        subprocess.call(["./digole", "SuperMario3"])
+        subprocess.call(["./digole", "setColor", "11"])
+    if titleScreenNumber == 17:
+        subprocess.call(["./digole", "TMNT2"])
+        subprocess.call(["./digole", "setColor", "11"])
+    if titleScreenNumber == 18:
+        subprocess.call(["./digole", "TopGun"])
+        subprocess.call(["./digole", "setColor", "28"])
+    if titleScreenNumber == 19:
+        subprocess.call(["./digole", "Turtles"])
+        subprocess.call(["./digole", "setColor", "28"])
+    if titleScreenNumber == 20:
+        subprocess.call(["./digole", "Zelda"])        
+        subprocess.call(["./digole", "setColor", "224"])
     
 iteration = 0
 while True:
-    try:
+   # try:
         # cycle through the displays (3 for now)
         iteration = iteration + 1
         if (iteration > displayIterations):
@@ -85,58 +152,36 @@ while True:
         if thirtyDayTotals < 1:
             sevenDayTotals = "--"
 
-        subprocess.call(["./digole", "clear"])
-                
-        subprocess.call(["./digole", "setColor", "11"])
-        subprocess.call(["./digole", "printxy_abs", "0", "90", 'KEVIN'])
-        
-        subprocess.call(["./digole", "setColor", "255"])
-        subprocess.call(["./digole", "printxy_abs", "0", "105", 'KEVIN'])
-        subprocess.call(["./digole", "printxy_abs", "0", "120", 'KEVIN'])
+        if iteration == displayIterations:
+            randomTitleScreen(randint(1,20))
 
-        subprocess.call(["./digole", "BlasterMaster"]) #1
-        subprocess.call(["./digole", "Castlevania"]) #0
-        subprocess.call(["./digole", "ChipDale"]) #1 
-        subprocess.call(["./digole", "Contra"]) #0
-        subprocess.call(["./digole", "DuckTales"]) #0
-        subprocess.call(["./digole", "Galaga"]) #1
-        subprocess.call(["./digole", "GhostBusters"]) #1
-        subprocess.call(["./digole", "Gradius"]) #0
-        subprocess.call(["./digole", "KidIcarus"]) #1 
-        subprocess.call(["./digole", "MarbleMadness"]) #1
-        subprocess.call(["./digole", "MegaMan"]) #0
-        subprocess.call(["./digole", "MetalGear"]) #0
-        subprocess.call(["./digole", "Metroid"]) #1
-        subprocess.call(["./digole", "PunchOut"]) #0 
-        subprocess.call(["./digole", "SuperMario2"]) #1 
-        subprocess.call(["./digole", "SuperMario3"]) #1
-        subprocess.call(["./digole", "TMNT2"]) #0
-        subprocess.call(["./digole", "TopGun"]) #0
-        subprocess.call(["./digole", "Turtles"]) #1
-        subprocess.call(["./digole", "Zelda"]) #1
-
-        #if (iteration == 1):
-        #    drawTextOnLine(1, str(ssid), titleFont, draw)
-        #    drawTextOnLine(2, str(ipAddress), bodyFont, draw)
-        #    drawTextOnLine(3, 'Up ' + str(kbpsIn), bodyFont, draw)
-        #    drawTextOnLine(4, 'Down ' + str(kbpsOut), bodyFont, draw)
-        #if (iteration == 2):
-         #   drawTextOnLine(1, str(ssid), titleFont, draw)
-         #   drawTextOnLine(2, "Leases " + str(leaseCount), bodyFont, draw)
-         #   drawTextOnLine(3, '7d ' + str(sevenDayTotals) + " GiB", bodyFont, draw)
-         #   drawTextOnLine(4, '30d ' + str(thirtyDayTotals) + " GiB", bodyFont, draw)
-        #if (iteration == 3):
-        #    drawTextOnLine(1, str(ssid), titleFont, draw)
-        #    drawTextOnLine(2, str(ipAddress), bodyFont, draw)
-        #    drawTextOnLine(3, '1d ' + str(oneDayTotals) + oneDayTotalsUnit, bodyFont, draw)
-        #    drawTextOnLine(4, str(kbpsIn) + '/' + str(kbpsOut), bodyFont, draw)
-        #if (iteration == 4):
-        #    drawTextOnLine(1, str(ssid), titleFont, draw)
-        #    drawTextOnLine(2, str(uptime), bodyFont, draw)
-        #    drawTextOnLine(3, "RX " + str(downloadStats), bodyFont, draw)
-        #    drawTextOnLine(4, "TX " + str(uploadStats), bodyFont, draw)
+        if (iteration == 1):
+            subprocess.call(["./digole", "printxy_abs", "0", "90", str(ipAddress)])
+            subprocess.call(["./digole", "setColor", "255"])
+            subprocess.call(["./digole", "printxy_abs", "0", "105", "Up " + str(kbpsIn)])
+            subprocess.call(["./digole", "printxy_abs", "0", "120", "Down " + str(kbpsOut)])
+            
+        if (iteration == 2):
+            subprocess.call(["./digole", "printxy_abs", "0", "90", "Leases " + str(leaseCount)])
+            subprocess.call(["./digole", "setColor", "255"])
+            subprocess.call(["./digole", "printxy_abs", "0", "105", "7d " + str(sevenDayTotals) + " GiB"])
+            subprocess.call(["./digole", "printxy_abs", "0", "120", "30d " + str(thirtyDayTotals) + " GiB"])
+            
+        if (iteration == 3):            
+            subprocess.call(["./digole", "printxy_abs", "0", "90", str(ipAddress)])
+            subprocess.call(["./digole", "setColor", "255"])
+            subprocess.call(["./digole", "printxy_abs", "0", "105", '1d ' + str(oneDayTotals) + oneDayTotalsUnit])
+            subprocess.call(["./digole", "printxy_abs", "0", "120", str(kbpsIn) + '/' + str(kbpsOut)])
+            
+        if (iteration == 4):            
+            subprocess.call(["./digole", "printxy_abs", "0", "90", str(uptime)])
+            subprocess.call(["./digole", "setColor", "255"])
+            subprocess.call(["./digole", "printxy_abs", "0", "105", "RX " + str(downloadStats)])
+            subprocess.call(["./digole", "printxy_abs", "0", "120", "TX " + str(uploadStats)])
                 
-    except:
-        pass
+    #except:
+    #    pass
         
-    time.sleep(10)
+        time.sleep(10)
+    
+    
