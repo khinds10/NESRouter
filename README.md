@@ -90,9 +90,9 @@ Raspberry Pi 3 Model B
 
 ![Raspberry PI 3](https://raw.githubusercontent.com/khinds10/NESRouter/master/construction/RPi.png "Raspberry PI 3")
 
-Diymall® 0.96" Inch Yellow and Blue I2c IIC Serial 128x64 Oled LCD
+1.44" Serial:UART/I2C/SPI TFT LCD 128x128 Display Module
 
-![Yellow and Blue](https://raw.githubusercontent.com/khinds10/NESRouter/master/construction/display.jpg "Yellow and Blue Display")
+![Digole 1.44in display](https://raw.githubusercontent.com/khinds10/NESRouter/master/construction/digole.png "Digole 1.44in display")
 
 5V 0.1A Mini Fan Raspberry Pi
 
@@ -335,11 +335,9 @@ Connect the small fan to the 5V and GND pins as well to have it run when the uni
 
 ![Final Wiring 2](https://raw.githubusercontent.com/khinds10/NESRouter/master/construction/final-wiring2.jpg "Final Wiring 2")
     
-###Connecting the ssd1306 Display
+###Connecting the Digole Display
 
-![Display Mounted](https://raw.githubusercontent.com/khinds10/NESRouter/master/construction/display-mounted.png "Display Mounted")
-
-Remove the black panel above the controller connectors by unscrewing it, cut a small slit in the black plastic to put the 4 pins of the ssd1306 display through to connect on the inside.
+MOUNTED IMAGE HERE
 
 Connect the following pins to the pins on the RaspberryPi
     
@@ -348,27 +346,11 @@ Connect the following pins to the pins on the RaspberryPi
     SDA is SDA
     SCL is SCL
 
-Download and install drivers for ssd1306 Display
-
-`sudo apt-get install i2c-tools python-smbus python-pip ifstat git python-imaging`
-`git clone https://github.com/rm-hull/ssd1306.git`
-`sudo pip install pillow`
-
 Now you should see the device in your i2cdetect command
 
 `i2cdetect -y 1`
-*it should show up in the grid of text as 3c*
+*it should show up in the grid of text as XXX*
 
-Install Python Drivers
-
-`cd ssd1306/`
-
-`sudo python setup.py install`
-
-Now your display should be ready to run
-
-`python examples/pi_logo.py`
-*should show a RaspberryPI symbol on your display to confirm it's working*
 
 ###Install network monitoring tools & DB Logging
 
@@ -495,7 +477,7 @@ Enable Python CGI Scripting
  
 You can now visit the local HTTP site [http://10.0.10.1]
 
-###Setup advanced network monitoring
+###Setup advanced network monitoring (via IPFM)
 
 `sudo apt-get update`
 
@@ -507,20 +489,20 @@ You can now visit the local HTTP site [http://10.0.10.1]
 
 Create with the following contents:
 
-> # Global variables
+> \# Global variables
 > 
-> # IPFM can monitor only one device.
+> \# IPFM can monitor only one device.
 > DEVICE eth0
 > 
-> ##### GLOBAL LOGGING CONFIGURATION #####
+> \# GLOBAL LOGGING CONFIGURATION
 > LOG
 > 
 > FILENAME "/var/log/ipfm/%Y_%d_%m/%H_%M"
 > 
-> # log every minute
+> \# log every minute
 > DUMP EVERY 1 minute
 > 
-> # clear statistics each day
+> \# clear statistics each day
 > CLEAR EVERY 24 hour
 > SORT IN
 > RESOLVE
@@ -528,12 +510,39 @@ Create with the following contents:
 `sudo service ipfm stop`
 
 
-http://www.digole.com/tools/PicturetoC_Hex_converter.php
+##OPTIONAL: Creating your own Nintendo images to render on the display
 
-256 Color for Color OLED/LCD(1 byte/pixel)
-    128 x 128
+Upload your own 128x128 file to the following URL:
 
-HEX: 0x
-Get C String
+http://www.digole.com/tools/PicturetoC_Hex_converter.php 
 
-Paste into a c .h header file of your choosing as the pixel data to tell the display to load
+Choose your image file to upload, add what size you want it to be on the screen (Width/Height)
+
+Select "256 Color for Color OLED/LCD(1 byte/pixel)" in the "Used for" dropdown
+
+Obtain the hex output.
+
+Add the hex output to a display/build/ header (.h) file, use the other ones as guides for syntax.
+
+Include the new file in the digole.c file 
+`#include "myimage.h`
+
+Include a new command line hook to your image file in the.
+_Note: the command below is saying draw your image at position 10 pixels over 10  pixels down. You can change it to different X,Y coordinates, you can also change the values 128,128 to whatever size your new image actually is._
+
+`} else if (strcmp(digoleCommand, "myimage") == 0) {`
+    `drawBitmap256(10, 10, 128, 128, &myimageVariableHere,0);  // myimageVariableHere is defined in your (.h) file`
+`}`
+
+Now rebuild (ignore the errors) below to have your new image render with the following command.
+>$ `./digole myimage`
+
+**Re-Building [Included] Digole Display Driver for your optional changes**
+
+>$ `cd display/build`
+
+>$ `gcc digole.c`
+
+>$ `mv a.out ../../digole`
+
+>$ `chmod +x ../../digole`
