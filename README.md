@@ -1,6 +1,8 @@
 # NESRouter
 ##Using an Old Nintendo Entertainment system case, produce a highly functional home router using a RaspberryPI 3
 
+![NES Router w/Screen](https://raw.githubusercontent.com/khinds10/NESRouter/master/construction/nes-router.jpg "NES Router w/Screen")
+
 ####1) Flashing RaspberriPi Hard Disk / Install Required Software (Using Ubuntu Linux)
 
 Download "RASPBIAN JESSIE LITE"
@@ -321,36 +323,36 @@ Add the following line:
 
 ###Install inside the NES
 
-Mount the RaspberryPi in the middle of the bottom of the empty NES case, fasten by glue or a small screw through the bottom.
+1) Using a 3D printer print the Digole Display frame "NESPanel" in the `/construction/display-frame/` folder. [if you don't have a 3D printer you could delicately cut a square hole for the Digole Display with a Dremel tool]
 
-![Final Wiring](https://raw.githubusercontent.com/khinds10/NESRouter/master/construction/final-wiring.jpg "Final Wiring")
-
-Cut the following holes open in the back and side of the case to allow for the small fan to be fastened on the side and the
+2) Cut the following holes open in the back and side of the case to allow for the small fan to be fastened on the side and the
 power/ethernet and USB ethernet cables to get in through the back.
 
-![Display Mounted](https://raw.githubusercontent.com/khinds10/NESRouter/master/construction/holes-cut.jpg "Holes Cut")
+![Holes Cut](https://raw.githubusercontent.com/khinds10/NESRouter/master/construction/holes-cut.jpg "Holes Cut")
 
+3) Unscrew the top right black panel from the NES and cleanly cut a large enough square hole to mount your digole display. Hot Glue the display in place with the "NESPanel" 3D printed frame over the top of it.
+
+![Mount Digole Display](https://raw.githubusercontent.com/khinds10/NESRouter/master/construction/mount-display.png "Mount Digole Display")
+
+4) Mount the RaspberryPi in the middle of the bottom of the empty NES case, fasten by glue or a small screw through the bottom.
 Using a 270 ohm resister, connect the "power on LED" of the NES to the 5V and GND pins in the Raspberry Pi (short LED lead is the ground).
 Connect the small fan to the 5V and GND pins as well to have it run when the unit starts up, glue the fan against the hole in the side for it.
 
-![Final Wiring 2](https://raw.githubusercontent.com/khinds10/NESRouter/master/construction/final-wiring2.jpg "Final Wiring 2")
-    
+![Wiring](https://raw.githubusercontent.com/khinds10/NESRouter/master/construction/wiring.jpg "Wiring")
+ 
 ###Connecting the Digole Display
-
-MOUNTED IMAGE HERE
 
 Connect the following pins to the pins on the RaspberryPi
     
     VCC is connected to 3v
     GND is ground
-    SDA is SDA
-    SCL is SCL
+    DATA is SDA
+    CLOCK is SCL
 
 Now you should see the device in your i2cdetect command
 
 `i2cdetect -y 1`
-*it should show up in the grid of text as XXX*
-
+*it should show up in the grid of text as 27*
 
 ###Install network monitoring tools & DB Logging
 
@@ -507,7 +509,7 @@ Create with the following contents:
 > SORT IN
 > RESOLVE
 
-`sudo service ipfm stop`
+`sudo service ipfm start`
 
 
 ##OPTIONAL: Creating your own Nintendo images to render on the display
