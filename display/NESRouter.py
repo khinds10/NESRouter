@@ -1,85 +1,80 @@
-#!/usr/bin/env python
+#!/usr/bin/python
+# Kevin Hinds http://www.kevinhinds.com
+# License: GPL 2.0
 import time, commands, subprocess, re
 from random import randint
 
-# device and screen settings
-ssid="NintendoWiFi"
-displayIterations = 4
-
 def randomTitleScreen(titleScreenNumber):
-    ''' show NES game title screen on the Digole Display
+    '''show NES game title screen on the Digole Display
     @titleScreenNumber : number 1 to 20 of which title screen to show
     '''
     subprocess.call(["./digole", "clear"])
     if titleScreenNumber == 1:
         subprocess.call(["./digole", "BlasterMaster"])
-        subprocess.call(["./digole", "setColor", "252"])
     if titleScreenNumber == 2:
         subprocess.call(["./digole", "Castlevania"])
-        subprocess.call(["./digole", "setColor", "28"])
     if titleScreenNumber == 3:
         subprocess.call(["./digole", "ChipDale"]) 
-        subprocess.call(["./digole", "setColor", "249"])
     if titleScreenNumber == 4:
         subprocess.call(["./digole", "Contra"])
-        subprocess.call(["./digole", "setColor", "252"])
     if titleScreenNumber == 5:
         subprocess.call(["./digole", "DuckTales"])
-        subprocess.call(["./digole", "setColor", "224"])
     if titleScreenNumber == 6:
         subprocess.call(["./digole", "Galaga"])
-        subprocess.call(["./digole", "setColor", "28"])
     if titleScreenNumber == 7:
         subprocess.call(["./digole", "GhostBusters"])
-        subprocess.call(["./digole", "setColor", "224"])
     if titleScreenNumber == 8:
         subprocess.call(["./digole", "Gradius"])
-        subprocess.call(["./digole", "setColor", "11"])
     if titleScreenNumber == 9:
         subprocess.call(["./digole", "KidIcarus"]) 
-        subprocess.call(["./digole", "setColor", "249"])
     if titleScreenNumber == 10:
         subprocess.call(["./digole", "MarbleMadness"])
-        subprocess.call(["./digole", "setColor", "11"])
     if titleScreenNumber == 11:
         subprocess.call(["./digole", "MegaMan"])
-        subprocess.call(["./digole", "setColor", "224"])
     if titleScreenNumber == 12:
         subprocess.call(["./digole", "MetalGear"])
-        subprocess.call(["./digole", "setColor", "224"])
     if titleScreenNumber == 13:
         subprocess.call(["./digole", "Metroid"])
-        subprocess.call(["./digole", "setColor", "11"])
     if titleScreenNumber == 14:
         subprocess.call(["./digole", "PunchOut"]) 
-        subprocess.call(["./digole", "setColor", "252"])
     if titleScreenNumber == 15:
         subprocess.call(["./digole", "SuperMario2"]) 
-        subprocess.call(["./digole", "setColor", "249"])
     if titleScreenNumber == 16:
         subprocess.call(["./digole", "SuperMario3"])
-        subprocess.call(["./digole", "setColor", "11"])
     if titleScreenNumber == 17:
         subprocess.call(["./digole", "TMNT2"])
-        subprocess.call(["./digole", "setColor", "11"])
     if titleScreenNumber == 18:
         subprocess.call(["./digole", "TopGun"])
-        subprocess.call(["./digole", "setColor", "28"])
     if titleScreenNumber == 19:
         subprocess.call(["./digole", "Turtles"])
-        subprocess.call(["./digole", "setColor", "28"])
     if titleScreenNumber == 20:
-        subprocess.call(["./digole", "Zelda"])        
-        subprocess.call(["./digole", "setColor", "224"])
+        subprocess.call(["./digole", "Zelda"])
+
+def clearText():
+    '''produce black background for text'''
+    subprocess.call(["./digole", "setFont", "18"])
+    subprocess.call(["./digole", "printxy_abs", "0", "98", "               "])
+    subprocess.call(["./digole", "printxy_abs", "0", "110", "               "])
+    subprocess.call(["./digole", "printxy_abs", "0", "120", "               "])
+    subprocess.call(["./digole", "setFont", "10"])
     
+# device and screen settings
+ssid="NintendoWiFi"
+displayIterations = 4
+subprocess.call(["./digole", "clear"])
+subprocess.call(["./digole", "setColor", "255"])
+randomTitleScreen(randint(1,20))
+
+# begin the loop
 iteration = 0
 while True:
-   # try:
+    try:
+    
         # cycle through the displays (3 for now)
         iteration = iteration + 1
         if (iteration > displayIterations):
             iteration = 1
-
+        
         # get current outside world IP Address
         ipAddress = commands.getstatusoutput("ip addr show eth0 | grep inet | awk '{print $2}' | cut -d/ -f1")
         ipAddress = ipAddress[1].split('\n')
@@ -154,34 +149,27 @@ while True:
 
         if iteration == displayIterations:
             randomTitleScreen(randint(1,20))
-
+            
+        clearText()
         if (iteration == 1):
-            subprocess.call(["./digole", "printxy_abs", "0", "90", str(ipAddress)])
-            subprocess.call(["./digole", "setColor", "255"])
-            subprocess.call(["./digole", "printxy_abs", "0", "105", "Up " + str(kbpsIn)])
-            subprocess.call(["./digole", "printxy_abs", "0", "120", "Down " + str(kbpsOut)])
+            subprocess.call(["./digole", "printxy_abs", "0", "100", str(ipAddress)])
+            subprocess.call(["./digole", "printxy_abs", "0", "110", "Up " + str(kbpsIn) + ' kb'])
+            subprocess.call(["./digole", "printxy_abs", "0", "120", "Down " + str(kbpsOut) + ' kb'])
             
         if (iteration == 2):
-            subprocess.call(["./digole", "printxy_abs", "0", "90", "Leases " + str(leaseCount)])
-            subprocess.call(["./digole", "setColor", "255"])
-            subprocess.call(["./digole", "printxy_abs", "0", "105", "7d " + str(sevenDayTotals) + " GiB"])
+            subprocess.call(["./digole", "printxy_abs", "0", "100", "Leases " + str(leaseCount)])
+            subprocess.call(["./digole", "printxy_abs", "0", "110", "7d " + str(sevenDayTotals) + " GiB"])
             subprocess.call(["./digole", "printxy_abs", "0", "120", "30d " + str(thirtyDayTotals) + " GiB"])
             
         if (iteration == 3):            
-            subprocess.call(["./digole", "printxy_abs", "0", "90", str(ipAddress)])
-            subprocess.call(["./digole", "setColor", "255"])
-            subprocess.call(["./digole", "printxy_abs", "0", "105", '1d ' + str(oneDayTotals) + oneDayTotalsUnit])
+            subprocess.call(["./digole", "printxy_abs", "0", "100", str(ipAddress)])
+            subprocess.call(["./digole", "printxy_abs", "0", "110", '1d ' + str(oneDayTotals) + oneDayTotalsUnit])
             subprocess.call(["./digole", "printxy_abs", "0", "120", str(kbpsIn) + '/' + str(kbpsOut)])
             
         if (iteration == 4):            
-            subprocess.call(["./digole", "printxy_abs", "0", "90", str(uptime)])
-            subprocess.call(["./digole", "setColor", "255"])
-            subprocess.call(["./digole", "printxy_abs", "0", "105", "RX " + str(downloadStats)])
+            subprocess.call(["./digole", "printxy_abs", "0", "100", str(uptime)])
+            subprocess.call(["./digole", "printxy_abs", "0", "110", "RX " + str(downloadStats)])
             subprocess.call(["./digole", "printxy_abs", "0", "120", "TX " + str(uploadStats)])
-                
-    #except:
-    #    pass
-        
+    except:
         time.sleep(10)
-    
-    
+    time.sleep(10)
