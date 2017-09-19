@@ -1,9 +1,9 @@
 # NESRouter
-##Using an Old Nintendo Entertainment system case, produce a highly functional home router using a RaspberryPI 3
+## Using an Old Nintendo Entertainment system case, produce a highly functional home router using a RaspberryPI 3
 
 ![NES Router w/Screen](https://raw.githubusercontent.com/khinds10/NESRouter/master/construction/nes-router.jpg "NES Router w/Screen")
 
-####1) Flashing RaspberriPi Hard Disk / Install Required Software (Using Ubuntu Linux)
+#### 1) Flashing RaspberriPi Hard Disk / Install Required Software (Using Ubuntu Linux)
 
 Download "RASPBIAN JESSIE LITE"
 https://www.raspberrypi.org/downloads/raspbian/
@@ -82,7 +82,7 @@ Reboot your PI to get the latest changes
 
 `reboot`
 
-###2) Supplies needed
+### 2) Supplies needed
 
 Old Nintendo Case from a broken NES (remove all the old contents inside the case, leaving only the outside frame, the power / reset buttons and the controller connections)
 
@@ -104,14 +104,13 @@ Ugreen USB 2.0 to 10/100 Fast Ethernet Lan Wired Network Adapter
 
 ![Ethernet USB](https://raw.githubusercontent.com/khinds10/NESRouter/master/construction/usb-eth.png "Ethernet USB")
 
-
 **Update local timezone settings**
 
 `sudo dpkg-reconfigure tzdata`
 
 `select your timezone using the interface`
 
-###3) Creating the WiFi Access Point
+### 3) Creating the WiFi Access Point
 **Please note, before this becomes a router we're plugging in the RaspberryPi to an existing network via its ethernet port to install the following packages**
 
 `sudo apt-get update && sudo apt-get -y upgrade`
@@ -155,7 +154,7 @@ Reload DHCP Server and bounce the configuration for eth0 and wlan0 connections
 
 `sudo ifdown eth0; sudo ifup wlan0`
 
-####Configure HOSTAPD (Change ssid and wpa_passphrase to the values of your own choosing)
+#### Configure HOSTAPD (Change ssid and wpa_passphrase to the values of your own choosing)
 
 `sudo vi /etc/hostapd/hostapd.conf`
 
@@ -270,7 +269,7 @@ Restart Services
 
 `sudo reboot`
 
-####Assigning Static IPs [Optional]
+#### Assigning Static IPs [Optional]
 **If you would like hosts on your network to have static ips please use the following**
 
 Aquire the hosts currently connected via DHCP
@@ -284,7 +283,7 @@ Add the MAC Address (from output above) and the IP address you would like to ass
 
 **Note: This will assign the network interface with the MAC Address: 12:34:56:78:9a:bc to IP address 10.0.20.20. The IP address listed does NOT have to be in the DHCP range given, just on the same subnet.  My main desktop above is on subnet eth1:10.0.20.0, so I gave it IP Address of 10.0.20.20.**
 
-####Adding UFW Firewall
+#### Adding UFW Firewall
 
 `sudo apt-get install ufw`
 
@@ -319,9 +318,9 @@ Fix BUG with UFW not starting on startup
 Add the following line:
 `@reboot /bin/sleep 60; ufw --force enable`
 
-##Construction
+## Construction
 
-###Install inside the NES
+### Install inside the NES
 
 1) Using a 3D printer print the Digole Display frame "NESPanel" in the `/construction/display-frame/` folder. [if you don't have a 3D printer you could delicately cut a square hole for the Digole Display with a Dremel tool]
 
@@ -340,7 +339,7 @@ Connect the small fan to the 5V and GND pins as well to have it run when the uni
 
 ![Wiring](https://raw.githubusercontent.com/khinds10/NESRouter/master/construction/wiring.jpg "Wiring")
  
-###Connecting the Digole Display
+### Connecting the Digole Display
 
 Connect the following pins to the pins on the RaspberryPi
     
@@ -354,7 +353,7 @@ Now you should see the device in your i2cdetect command
 `i2cdetect -y 1`
 *it should show up in the grid of text as 27*
 
-###Install network monitoring tools & DB Logging
+### Install network monitoring tools & DB Logging
 
 `sudo apt-get install ifstat memcached python-memcache postgresql postgresql-contrib python-psycopg2`
 
@@ -408,7 +407,7 @@ Add this line
 `@reboot /bin/sleep 60; nohup python /home/pi/logging/networkUsage.py >/dev/null 2>&1`
 
 
-###Install the traffic summary report (runs every 5 minutes by cronjob)
+### Install the traffic summary report (runs every 5 minutes by cronjob)
 
 `crontab -e`
 
@@ -417,7 +416,7 @@ add the following line
 > */5 * * * * python /home/pi/logging/trafficSummary.py
 
 
-###Install the dashboard screen
+### Install the dashboard screen
 
 Copy the "display" folder of code from this project to the home directory of your RPi
 
@@ -438,7 +437,7 @@ Verify the display starts working on reboot
 `sudo reboot`
 
 
-###Install the local usage/statistics website [http://10.0.10.1]
+### Install the local usage/statistics website [http://10.0.10.1]
 
 `sudo apt-get update && sudo apt-get upgrade -y`
 
@@ -479,7 +478,7 @@ Enable Python CGI Scripting
  
 You can now visit the local HTTP site [http://10.0.10.1]
 
-###Setup advanced network monitoring (via IPFM)
+### Setup advanced network monitoring (via IPFM)
 
 `sudo apt-get update`
 
@@ -511,8 +510,7 @@ Create with the following contents:
 
 `sudo service ipfm start`
 
-
-##OPTIONAL: Creating your own Nintendo images to render on the display
+## OPTIONAL: Creating your own Nintendo images to render on the display
 
 Upload your own 128x128 file to the following URL:
 
